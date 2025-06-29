@@ -1,4 +1,5 @@
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = environ.Path(__file__) - 2
@@ -24,7 +25,7 @@ SECRET_KEY = "django-insecure-(315$m!3jlh4o&1oae$9*m5ouywza^!d@^0^^cvpbb(dtbia*5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=['*'])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 
 # Application definition
 
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     
     # Third Party Apps
-    "corsheaders"
+    "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
     
@@ -49,12 +50,17 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     
-    
+    # My Apps
+    "account",
 ]
 
+SITE_ID = 1
+
 MIDDLEWARE = [
+    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -139,3 +145,31 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_URL = "/media/"
 # Path where media is stored
 MEDIA_ROOT = BASE_DIR("media")
+
+# Cors
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True # for dev only
+
+# Email Related
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
+
+REST_USE_JWT = True # I don't think this one neccessary but just put it
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_HTTPONLY': False # by default it doesn't show refresh token for security reasons so you need to do this
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
