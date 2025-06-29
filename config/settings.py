@@ -49,9 +49,10 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
     
     # My Apps
-    "account",
+    "accounts",
 ]
 
 SITE_ID = 1
@@ -146,6 +147,12 @@ MEDIA_URL = "/media/"
 # Path where media is stored
 MEDIA_ROOT = BASE_DIR("media")
 
+# Custom User
+AUTH_USER_MODEL = "accounts.User"
+
+# Custom Account Adapter (for editing the confirmation url)
+ACCOUNT_ADAPTER = "accounts.adapters.CustomAccountAdapter"
+
 # Cors
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True # for dev only
@@ -173,3 +180,26 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
+
+# OAuth Providers
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('GOOGLE_CLIENT_ID'),
+            'secret': 'fake', # it's "fake" cuz i'm using the id_token oauth flow and you don't need client secret for that
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
