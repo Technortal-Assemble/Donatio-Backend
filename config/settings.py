@@ -24,7 +24,7 @@ SECRET_KEY = "django-insecure-(315$m!3jlh4o&1oae$9*m5ouywza^!d@^0^^cvpbb(dtbia*5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=['*'])
 
 # Application definition
 
@@ -35,7 +35,21 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    
+    # Third Party Apps
+    "corsheaders"
     "rest_framework",
+    "rest_framework.authtoken",
+    
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    
+    
 ]
 
 MIDDLEWARE = [
