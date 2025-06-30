@@ -1,5 +1,5 @@
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
-from dj_rest_auth.serializers import UserDetailsSerializer as BaseUserDetailsSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer
 from rest_framework import serializers
 from .models import User, Profile
 
@@ -15,10 +15,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ['full_name', 'phone_number']
     
-class UserDetailsSerializer(BaseUserDetailsSerializer):   
+class CustomUserDetailsSerializer(UserDetailsSerializer):   
     profile = ProfileSerializer(read_only=True)
     
-    class Meta(BaseUserDetailsSerializer.Meta):
-        model = User
+    class Meta(UserDetailsSerializer.Meta):
         fields = ['id', 'username', 'email', 'is_staff', 'profile', 'joined_at']
         read_only_fields = ['is_staff']

@@ -4,5 +4,5 @@ from .models import User, Profile
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    if created and not (instance.is_staff == True or instance.is_superuser == True):
+    if created and not (instance.is_staff or instance.is_superuser):
         Profile.objects.create(user=instance)

@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "django_filters",
     
     # My Apps
-    "accounts",
+    'accounts.apps.AccountsConfig',
 ]
 
 SITE_ID = 1
@@ -191,7 +191,7 @@ SIMPLE_JWT = {
 }
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserDetailsSerializer'
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailsSerializer',
 }
 
 # OAuth Providers
