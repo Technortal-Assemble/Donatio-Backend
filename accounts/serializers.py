@@ -1,4 +1,7 @@
 from dj_rest_auth.registration.serializers import SocialLoginSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer as BaseUserDetailsSerializer
+from rest_framework import serializers
+from .models import User, Profile
 
 class GoogleLoginSerializer(SocialLoginSerializer):
     def validate(self, attrs):
@@ -6,3 +9,16 @@ class GoogleLoginSerializer(SocialLoginSerializer):
         if not attrs.get('access_token') and 'id_token' in self.context['request'].data:
             attrs['access_token'] = self.context['request'].data['id_token']
         return super().validate(attrs)
+    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['full_name', 'phone_number']
+    
+class UserDetailsSerializer(BaseUserDetailsSerializer):   
+    profile = ProfileSerializer(read_only=True)
+    
+    class Meta(BaseUserDetailsSerializer.Meta):
+        model = User
+        fields = ['id', 'username', 'email', 'is_staff', 'profile', 'joined_at']
+        read_only_fields = ['is_staff']

@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     
+    "django_filters",
+    
     # My Apps
     "accounts",
 ]
@@ -158,8 +160,15 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True # for dev only
 
 # Email Related
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'khantthitoo.dev@gmail.com'
+EMAIL_HOST_PASSWORD = env('GOOGLE_APP_PASSWORD')
+DEFAULT_FROM_EMAIL = "Donatio <khantthitoo.dev@gmail.com>"
+
+ACCOUNT_EMAIL_VERIFICATION = "mandatory" # Email Varification Is Required
 ACCOUNT_EMAIL_REQUIRED = True
 
 REST_USE_JWT = True # I don't think this one neccessary but just put it
@@ -181,12 +190,16 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'accounts.serializers.UserDetailsSerializer'
+}
+
 # OAuth Providers
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
             'client_id': env('GOOGLE_CLIENT_ID'),
-            'secret': 'fake', # it's "fake" cuz i'm using the id_token oauth flow and you don't need client secret for that
+            'secret': 'fake', # client secret not needed for the current flow
             'key': ''
         },
         'SCOPE': [
@@ -203,3 +216,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
